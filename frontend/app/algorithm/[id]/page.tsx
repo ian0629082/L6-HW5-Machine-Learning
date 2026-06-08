@@ -107,10 +107,12 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
     fetchQuiz();
   }, [id]);
 
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   const fetchAlgorithmDetail = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}`);
+      const res = await fetch(`${apiBase}/api/algorithms/${id}`);
       if (res.ok) {
         const result = await res.json();
         setData(result);
@@ -125,7 +127,7 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
 
   const fetchQuiz = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}/quiz`);
+      const res = await fetch(`${apiBase}/api/algorithms/${id}/quiz`);
       if (res.ok) {
         const quizData = await res.json();
         setQuizzes(quizData);
@@ -144,7 +146,7 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
   const handleStudyCompleted = async () => {
     if (!data) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}/progress`, {
+      const res = await fetch(`${apiBase}/api/algorithms/${id}/progress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ study_completed: true })
@@ -165,7 +167,7 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
   const handlePlaygroundCompleted = async () => {
     if (!data || data.progress.playground_completed) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}/progress`, {
+      const res = await fetch(`${apiBase}/api/algorithms/${id}/progress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ playground_completed: true })
@@ -187,7 +189,7 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
     setNotesSaving(true);
     setNotesStatus("");
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}/notes`, {
+      const res = await fetch(`${apiBase}/api/algorithms/${id}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: notesText })
@@ -214,7 +216,7 @@ export default function AlgorithmPage({ params }: { params: { id: string } }) {
     }
     setQuizLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/algorithms/${id}/quiz/grade`, {
+      const res = await fetch(`${apiBase}/api/algorithms/${id}/quiz/grade`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: selectedAnswers })
