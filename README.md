@@ -53,59 +53,81 @@
 │   ├── next.config.js             # Next.js 設定檔
 │   └── package.json               # 前端 npm 依賴與指令
 │
-└── design-system/                 # 由 UI/UX 技能產生的設計系統文件
-    └── ml-mastery/
-        └── MASTER.md              # 全域 UI 設計規範 (OLED Dark Theme)
+├── design-system/                 # 由 UI/UX 技能產生的設計系統文件
+│   └── ml-mastery/
+│       └── MASTER.md              # 全域 UI 設計規範 (OLED Dark Theme)
+│
+└── interactive_learning.html      # [NEW] 單一 HTML 外掛連接版 (免 Next.js 開發伺服器，直接點擊開啟)
 ```
 
 ---
 
 ## 📦 安裝與啟動步驟
 
-本專案需要本機安裝有 **Node.js (v18+)** 與 **Python (3.9+)**。
-
-### 1. 啟動後端服務 (FastAPI)
-
-1. 進入 `backend` 目錄：
-   ```bash
-   cd backend
-   ```
-2. 啟動並進入虛擬環境 (Windows PowerShell)：
-   ```powershell
-   .venv\Scripts\activate
-   ```
-3. 啟動 FastAPI 伺服器：
-   ```bash
-   python main.py
-   ```
-   後端將運行於：`http://127.0.0.1:8000`
+本專案提供兩種運行模式：**全端開發版 (Next.js + FastAPI)** 與 **輕量單網頁版 (直接點開 HTML + FastAPI)**。
 
 ---
 
-### 2. 啟動前端網頁 (Next.js)
+### 方案 A：輕量單網頁版（直接點擊開啟，最速推薦！🚀）
 
-1. 打開另一個終端機窗口，進入 `frontend` 目錄：
-   ```bash
-   cd frontend
-   ```
-2. 安裝套件依賴：
-   ```bash
-   npm install
-   ```
-3. 啟動開發伺服器：
-   ```bash
-   npm run dev
-   ```
-   前端網頁將運行於：[**`http://localhost:3000`**](http://localhost:3000)
+如果您不想安裝 Node.js 依賴、啟動 Next.js 開發伺服器，可以選擇此模式。
+
+1. **啟動後端服務 (FastAPI)**：
+   - 進入 `backend` 目錄：
+     ```bash
+     cd backend
+     ```
+   - 啟動並進入虛擬環境 (Windows PowerShell)：
+     ```powershell
+     .venv\Scripts\activate
+     ```
+   - 啟動 FastAPI 伺服器：
+     ```bash
+     python main.py
+     ```
+     後端將運行於：`http://127.0.0.1:8000`
+
+2. **開啟網頁**：
+   - 雙擊專案根目錄下的 [**`interactive_learning.html`**](file:///d:/AI%20class/0608/HW5/interactive_learning.html) 檔案，即可直接在瀏覽器中開啟。
+   - **後端連接設定**：
+     - 若後端運作於其他網址（如 Render 或 localtunnel），可在左側邊欄的 **「API 後端伺服器網址」** 欄位中進行修改。
+     - 修改後點擊 **「套用」** 即可與該 FastAPI 後端及 SQLite 資料庫進行連線同步。
+     - 若後端未開啟，此 HTML 版將會 fallback 使用 offline 預設數據，讓您依然可以自由研讀與進行遊樂場互動！
+
+---
+
+### 方案 B：全端開發版 (Next.js 前端 + FastAPI 後端)
+
+本專案需要本機安裝有 **Node.js (v18+)** 與 **Python (3.9+)**。
+
+1. **啟動後端服務 (FastAPI)**：
+   - 請參考上述「方案 A」的第一步，啟動 FastAPI 伺服器 (`http://127.0.0.1:8000`)。
+
+2. **啟動前端網頁 (Next.js)**：
+   - 打開另一個終端機窗口，進入 `frontend` 目錄：
+     ```bash
+     cd frontend
+     ```
+   - 安裝套件依賴：
+     ```bash
+     npm install
+     ```
+   - 啟動開發伺服器：
+     ```bash
+     npm run dev
+     ```
+     前端網頁將運行於：[**`http://localhost:3000`**](http://localhost:3000)
 
 ---
 
 ## 🧪 驗證與操作說明
 
-1. 開啟瀏覽器訪問 [**`http://localhost:3000`**](http://localhost:3000)。
-2. **決策精靈**：在首頁點選問題答案（例如：有標籤 -> 連續數值），觀察精靈是否推薦「線性迴歸」並提供跳轉連結。
-3. **研讀指引**：點擊左側任意演算法（如：`線性迴歸`），閱讀核心概念後點擊最下方的「標記研讀完成」，觀察左側邊欄該演算法旁邊的 `📖` 圖示是否變綠。
-4. **互動演練**：切換到 `互動演練遊樂場` 頁籤，操作拉桿或點擊畫布，完成動作後，左側的 `🧪` 實驗瓶圖示將變綠解鎖。
-5. **挑戰測驗**：切換到 `觀念挑戰測驗` 頁籤答題，答完 3 題後點擊「送出測驗答案」。若答對 2 題以上，左側的 `📝` 筆記圖示將變綠解鎖，並可看到詳細的公式解析。
-6. **保存筆記**：在任何演算法專頁底部的筆記框輸入一些文字，點擊「儲存筆記」，重新整理頁面後，確認您的筆記已被成功從後端 SQLite 資料庫載入回來。
-
+1. 開啟瀏覽器訪問 [**`http://localhost:3000`**](http://localhost:3000) (Next.js 版) 或直接雙擊開啟 [**`interactive_learning.html`**](file:///d:/AI%20class/0608/HW5/interactive_learning.html) (單一 HTML 外掛連接版)。
+2. **後端連線確認**：
+   - 點開 HTML 網頁後，確認左側下方的綠色狀態標籤顯示 `HTML + FASTAPI CONNECTED` (或對應連線指示)。
+   - 在左側「API 後端伺服器網址」輸入本地運行的 `http://127.0.0.1:8000` (或線上遠端 API 網址) 後按 **「套用」**。
+3. **決策精靈**：在首頁點選問題答案（例如：有標籤 -> 連續數值），觀察精靈是否推薦「線性迴歸」並提供跳轉連結。
+4. **研讀指引**：點擊左側任意演算法（如：`線性迴歸`），閱讀核心概念後點擊最下方的「標記研讀完成」，觀察左側邊欄該演算法旁邊的 `📖` 圖示是否變綠。
+5. **互動演練**：切換到 `互動演練遊樂場` 頁籤，操作拉桿或點擊畫布，完成動作後，左側的 `🧪` 實驗瓶圖示將變綠解鎖。
+6. **挑戰測驗**：切換到 `觀念挑戰測驗` 頁籤答題，答完 3 題後點擊「送出測驗答案」。若答對 2 題以上，左側的 `📝` 筆記圖示將變綠解鎖，並可看到詳細的公式解析。
+7. **保存筆記**：在任何演算法專頁底部的筆記框輸入一些文字，點擊「儲存筆記」，重新整理頁面後，確認您的筆記已被成功從後端 SQLite 資料庫載入回來。
