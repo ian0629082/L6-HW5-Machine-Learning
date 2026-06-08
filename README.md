@@ -57,7 +57,9 @@
 │   └── ml-mastery/
 │       └── MASTER.md              # 全域 UI 設計規範 (OLED Dark Theme)
 │
-└── interactive_learning.html      # [NEW] 單一 HTML 外掛連接版 (免 Next.js 開發伺服器，直接點擊開啟)
+├── interactive_learning.html      # 單一 HTML 外掛連接版 (免 Next.js 開發伺服器，直接點擊開啟)
+├── streamlit_app.py               # [NEW] Streamlit 啟動入口腳本
+└── requirements.txt               # [NEW] 根目錄 Streamlit 依賴設定檔
 ```
 
 ---
@@ -117,6 +119,33 @@
      npm run dev
      ```
      前端網頁將運行於：[**`http://localhost:3000`**](http://localhost:3000)
+
+---
+
+### 方案 C：Streamlit 本地與線上部署版 (Streamlit + FastAPI 雲端版 ☁️)
+
+如果您希望使用 Streamlit Community Cloud 將本專案部署到線上，或在本地以 Streamlit 服務運行：
+
+#### 1. 本地啟動 Streamlit
+1. 安裝 Streamlit 依賴（在您的 Python 虛擬環境中）：
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. 啟動 Streamlit 服務：
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+   網頁將會自動開啟於：[**`http://localhost:8501`**](http://localhost:8501)
+
+#### 2. 部署到 Streamlit Community Cloud
+1. 將本專案推送（Push）到您的 GitHub 儲存庫。
+2. 登入 [Streamlit Share](https://share.streamlit.io/) 並點擊 **"Create app"**。
+3. 綁定您的 GitHub 儲存庫，填入設定：
+   - **Repository**: `您的儲存庫路徑` (例如 `ian0629082/L6-HW5-Machine-Learning`)
+   - **Branch**: `main`
+   - **Main file path**: `streamlit_app.py`
+4. 點擊 **"Deploy!"**，數分鐘後您的精美學習平台將完成部署。
+5. **後端資料庫同步**：部署成功後，若欲同步學習進度與筆記，請於網頁左側邊欄的 **「API 後端伺服器網址」** 欄位中，輸入您已部署的 FastAPI 後端 API 地址（例如 Render 上的公網 API 網址）並點擊 **「套用」**。
 
 ---
 
