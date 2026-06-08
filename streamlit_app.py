@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import os
 
 # 設定 Streamlit 頁面寬版顯示與標題
@@ -43,15 +42,11 @@ hide_st_style = """
 """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# 讀取本地的單一 HTML 檔案並渲染
+# 取得本地 HTML 檔案路徑
 html_path = os.path.join(os.path.dirname(__file__), "interactive_learning.html")
 
 if os.path.exists(html_path):
-    with open(html_path, "r", encoding="utf-8") as f:
-        html_content = f.read()
-    
-    # 使用 streamlit.components.v1.html 嵌入
-    # 高度設為 950 像素，並開啟 scrolling 以支援在 iframe 內順暢滾動
-    components.html(html_content, height=950, scrolling=True)
+    # 使用 Streamlit 新版推薦的 st.iframe，可直接傳入本地檔案路徑
+    st.iframe(html_path, height=950)
 else:
     st.error("找不到 `interactive_learning.html` 檔案。請確保該檔案存在於專案根目錄下。")
