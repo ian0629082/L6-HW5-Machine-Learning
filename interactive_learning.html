@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>十大機器學習演算法動態學習平台 - 單一網頁版</title>
+  <!-- Import Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
+  
+  <style>
+    /* Styling System (UI/UX Pro Max - OLED Dark Mode) */
+    :root {
+      --color-primary: #1E293B;
+      --color-on-primary: #FFFFFF;
+      --color-secondary: #334155;
+      --color-accent: #22C55E;      /* Run Green */
+      --color-accent-hover: #16A34A;
+      --color-background: #0F172A;  /* Midnight Slate */
+      --color-foreground: #F8FAFC;  /* Off-white */
+      --color-muted: #1E293B;
+      --color-muted-foreground: #94A3B8;
+      --color-border: #334155;
+      --color-destructive: #EF4444;
+      --color-ring: #22C55E;
+      --color-card-bg: rgba(30, 41, 59, 0.4);
+      --color-glass-border: rgba(255, 255, 255, 0.05);
+
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.0rem;
+
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+      
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      --font-heading: 'Fira Code', monospace;
+      --font-body: 'Fira Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: var(--color-foreground);
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    a:hover {
+      color: var(--color-accent-hover);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 200ms ease;
+    }
+
+    /* Layout */
+    .sidebar {
+      width: 300px;
+      background-color: #0b0f19;
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      padding-bottom: var(--space-md);
+    }
+
+    .sidebar-header {
+      padding: var(--space-lg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+    }
+
+    .logo-title {
+      font-size: 1.15rem;
+    }
+
+    .logo-subtitle {
+      font-size: 0.75rem;
+      color: var(--color-muted-foreground);
+    }
+
+    /* API Configuration Input */
+    .api-config {
+      padding: var(--space-md) var(--space-lg) var(--space-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .api-config label {
+      font-size: 0.75rem;
+      font-family: var(--font-heading);
+      color: var(--color-muted-foreground);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .api-input-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .api-input {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--color-border);
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .api-btn {
+      background: var(--color-secondary);
+      border: 1px solid var(--color-border);
+      color: var(--color-foreground);
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .api-btn:hover {
+      background: var(--color-primary);
+      border-color: var(--color-accent);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-md) 0;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-family: var(--font-heading);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-muted-foreground);
+      padding: var(--space-md) var(--space-lg) var(--space-xs);
+      opacity: 0.7;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px var(--space-lg);
+      color: var(--color-muted-foreground);
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--color-foreground);
+    }
+
+    .nav-link.active {
+      background-color: rgba(34, 197, 94, 0.08);
+      color: var(--color-foreground);
+      border-left-color: var(--color-accent);
+    }
+
+    .alg-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .alg-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .alg-type {
+      font-size: 0.7rem;
+      color: var(--color-muted-foreground);
+    }
+
+    .progress-badges {
+      display: flex;
+      gap: 6px;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      opacity: 0.2;
+      filter: grayscale(100%);
+      transition: all 250ms ease;
+    }
+
+    .badge.completed {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: scale(1.1);
+    }
+
+    .main-content {
+      margin-left: 300px;
+      flex: 1;
+      padding: var(--space-xl);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    .glass-panel {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--color-glass-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+
+    .page-header {
+      margin-bottom: var(--space-md);
+    }
+
+    .main-title {
+      font-size: 2.2rem;
+      margin-bottom: var(--space-sm);
+      background: linear-gradient(135deg, #38bdf8 0%, #22c55e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--color-muted-foreground);
+      font-size: 1.05rem;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .stat-card {
+      padding: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-icon {
+      font-size: 2.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: var(--space-sm);
+      border-radius: var(--radius-md);
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--color-muted-foreground);
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+    }
+
+    .stat-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-progress {
+      height: 100%;
+      background: var(--color-accent);
+      width: 0%;
+      transition: width 800ms ease;
+    }
+
+    /* Dashboard Wizard */
+    .dashboard-section {
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .section-subtitle {
+      color: var(--color-muted-foreground);
+      font-size: 0.9rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .wizard-container {
+      padding: var(--space-xl);
+    }
+
+    .wizard-step {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .wizard-question {
+      font-size: 1.25rem;
+    }
+
+    .wizard-desc {
+      color: var(--color-muted-foreground);
+      font-size: 0.95rem;
+    }
+
+    .wizard-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+
+    .wizard-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      text-align: left;
+      color: var(--color-foreground);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .wizard-btn:hover {
+      border-color: var(--color-accent);
+      background: rgba(34, 197, 94, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .option-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .option-subtitle {
+      font-size: 0.85rem;
+      color: var(--color-muted-foreground);
+    }
+
+    .recommendation-step {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .recommendation-badge {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--color-accent);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 4px var(--space-sm);
+      font-size: 0.75rem;
+      font-family: var(--font-heading);
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .recommendation-title {
+      font-size: 1.8rem;
+    }
+
+    .recommendation-text {
+      color: var(--color-muted-foreground);
+      max-width: 500px;
+    }
+
+    .wizard-footer-buttons {
+      display: flex;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-foreground);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-sm);
+    }
+
+    .reset-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .go-btn {
+      background: var(--color-accent);
+      color: white;
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      border: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .go-btn:hover {
+      background: var(--color-accent-hover);
+      transform: translateY(-1px);
+    }
+
+    /* SVG Roadmap */
+    .roadmap-container {
+      padding: var(--space-xl);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .roadmap-svg {
+      background: #0b0f19;
+      border-radius: var(--radius-md);
+    }
+
+    .svg-node {
+      cursor: pointer;
+    }
+
+    .node-rect {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 2;
+      transition: all 250ms ease;
+    }
+
+    .node-rect:hover {
+      fill: #273549;
+      stroke: var(--color-accent);
+      filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.4));
+    }
+
+    .node-rect.completed {
+      stroke: var(--color-accent);
+      stroke-width: 3;
+    }
+
+    .node-text {
+      fill: var(--color-foreground);
+      font-weight: 600;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .node-sub {
+      fill: var(--color-muted-foreground);
+      font-family: var(--font-heading);
+      font-size: 10px;
+      pointer-events: none;
+    }
+
+    /* Algorithm Detail Page Tab Navigation */
+    .tabs-row {
+      display: flex;
+      border-bottom: 2px solid var(--color-border);
+      gap: var(--space-sm);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-muted-foreground);
+      padding: var(--space-sm) var(--space-lg);
+      font-size: 1rem;
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+      color: var(--color-foreground);
+    }
+
+    .tab-btn.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .tab-viewport {
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .study-pane {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    .study-section h3 {
+      font-size: 1.25rem;
+      margin-bottom: var(--space-md);
+      border-left: 4px solid var(--color-accent);
+      padding-left: var(--space-sm);
+    }
+
+    .study-text {
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      font-size: 0.98rem;
+    }
+
+    .workflow-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .workflow-list li {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+    }
+
+    .workflow-step-num {
+      background: var(--color-secondary);
+      color: var(--color-foreground);
+      font-family: var(--font-heading);
+      font-weight: bold;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      border: 1px solid var(--color-border);
+    }
+
+    .workflow-step-text {
+      padding-top: 2px;
+      color: #cbd5e1;
+    }
+
+    .example-box {
+      padding: var(--space-lg);
+      background-color: rgba(30, 41, 59, 0.2);
+      border-left: 4px solid #38bdf8;
+      color: #e2e8f0;
+    }
+
+    .pros-cons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .pros-card, .cons-card, .mistake-box, .advice-box {
+      padding: var(--space-lg);
+    }
+
+    .pros-title {
+      color: #22c55e;
+    }
+
+    .cons-title {
+      color: #ef4444;
+    }
+
+    .mistakes-title {
+      color: #f59e0b;
+    }
+
+    .pros-card ul, .cons-card ul {
+      list-style-type: square;
+      padding-left: var(--space-lg);
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .mistake-box {
+      border-left: 4px solid #f59e0b;
+      color: #e2e8f0;
+    }
+
+    .advice-box {
+      border-left: 4px solid var(--color-accent);
+      color: #e2e8f0;
+    }
+
+    .completed-btn {
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      font-weight: 600;
+      padding: var(--space-sm) var(--space-xl);
+      border-radius: var(--radius-sm);
+    }
+
+    .completed-btn:hover {
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    .completed-btn.completed {
+      background: var(--color-accent);
+      color: white;
+    }
+
+    /* Playgrounds */
+    .playground-box {
+      padding: var(--space-xl);
+      background-color: rgba(11, 15, 25, 0.6);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .widget-title {
+      font-size: 1.3rem;
+      margin-bottom: var(--space-xs);
+      color: var(--color-accent);
+    }
+
+    .widget-desc {
+      font-size: 0.9rem;
+      color: var(--color-muted-foreground);
+      margin-bottom: var(--space-xl);
+    }
+
+    .playground-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: var(--space-xl);
+    }
+
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .slider-group label {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .slider-group input[type="range"] {
+      accent-color: var(--color-accent);
+      background: var(--color-secondary);
+      height: 6px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .result-stats {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      border: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+
+    .stat-code-val {
+      font-family: var(--font-heading);
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    .stat-success-val {
+      font-family: var(--font-heading);
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .stat-error-val {
+      font-family: var(--font-heading);
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    .stat-desc-val {
+      color: var(--color-muted-foreground);
+      font-size: 0.8rem;
+    }
+
+    .visual-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .run-btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: var(--radius-sm);
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .run-btn:hover {
+      background: var(--color-accent-hover);
+    }
+
+    /* Decision Tree Playground */
+    .tree-flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      align-items: center;
+      padding: var(--space-md);
+    }
+
+    .tree-question-card {
+      padding: var(--space-md);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+    }
+
+    .mini-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border);
+      color: var(--color-foreground);
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+
+    .mini-btn:hover, .mini-btn.active {
+      border-color: var(--color-accent);
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--color-accent);
+    }
+
+    .tree-result-card {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px dashed var(--color-accent);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      color: var(--color-accent);
+      text-align: center;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    /* Random Forest Playground */
+    .forest-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xl);
+    }
+
+    .trees-row {
+      display: flex;
+      gap: var(--space-md);
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tree-vote-card {
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 100px;
+    }
+
+    .tree-icon {
+      font-size: 1.8rem;
+    }
+
+    .tree-label {
+      font-size: 0.75rem;
+      color: var(--color-muted-foreground);
+    }
+
+    .vote-badge {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: var(--color-muted-foreground);
+    }
+
+    .vote-badge.yes {
+      color: #3b82f6;
+    }
+
+    .vote-badge.no {
+      color: #f59e0b;
+    }
+
+    /* Naive Bayes */
+    .text-input {
+      background: #0b0f19;
+      border: 1px solid var(--color-border);
+      color: var(--color-foreground);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      width: 100%;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .text-calc-panel {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      align-self: stretch;
+      justify-content: center;
+    }
+
+    .math-code {
+      background: #000;
+      color: #38bdf8;
+      padding: var(--space-sm);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      word-break: break-all;
+    }
+
+    /* Quiz Challenge */
+    .quiz-pane-title {
+      font-size: 1.25rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .quiz-pane-desc {
+      color: var(--color-muted-foreground);
+      font-size: 0.88rem;
+      margin-bottom: var(--space-xl);
+    }
+
+    .quiz-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .quiz-card {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .quiz-question {
+      font-size: 1.05rem;
+    }
+
+    .quiz-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .quiz-option-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.92rem;
+    }
+
+    .quiz-option-label:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .quiz-option-label.selected {
+      border-color: var(--color-accent);
+      background: rgba(34, 197, 94, 0.04);
+    }
+
+    .quiz-option-label.correct-opt {
+      border-color: #22c55e !important;
+      background: rgba(34, 197, 94, 0.1) !important;
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .quiz-option-label.wrong-opt {
+      border-color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.1) !important;
+      color: #ef4444;
+      text-decoration: line-through;
+    }
+
+    .quiz-explanation-box {
+      margin-top: var(--space-sm);
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+    }
+
+    .quiz-explanation-box.correct {
+      background: rgba(34, 197, 94, 0.05);
+      border-left: 4px solid #22c55e;
+    }
+
+    .quiz-explanation-box.wrong {
+      background: rgba(239, 68, 68, 0.05);
+      border-left: 4px solid #ef4444;
+    }
+
+    .explanation-status {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .explanation-text {
+      color: #cbd5e1;
+    }
+
+    .submit-quiz-btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      padding: var(--space-sm) var(--space-2xl);
+      border-radius: var(--radius-sm);
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .submit-quiz-btn:hover {
+      background: var(--color-accent-hover);
+    }
+
+    .quiz-score-banner {
+      padding: var(--space-lg);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .score-val {
+      color: var(--color-accent);
+      font-size: 1.8rem;
+      font-family: var(--font-heading);
+    }
+
+    .passed-text {
+      color: #22c55e;
+      font-weight: bold;
+    }
+
+    .failed-text {
+      color: #ef4444;
+      font-weight: bold;
+    }
+
+    .retry-quiz-btn {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-foreground);
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-sm);
+    }
+
+    /* Notes Section */
+    .notes-section {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-top: var(--space-xl);
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notes-status-text {
+      font-size: 0.85rem;
+      color: var(--color-accent);
+      font-family: var(--font-heading);
+      font-weight: bold;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      height: 120px;
+      background: #0b0f19;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-foreground);
+      padding: var(--space-md);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+
+    .notes-textarea:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .save-notes-btn {
+      align-self: flex-end;
+      background: var(--color-primary);
+      color: white;
+      border: 1px solid var(--color-border);
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+
+    .save-notes-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    /* Animation Utilities */
+    .fade-in {
+      animation: fadeIn 400ms ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      color: var(--color-muted-foreground);
+      margin-bottom: var(--space-sm);
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .back-link:hover {
+      color: var(--color-accent);
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-xs);
+    }
+
+    .alg-title {
+      font-size: 2rem;
+    }
+
+    .alg-type-tag {
+      background: rgba(56, 189, 248, 0.1);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+
+    .header-desc {
+      color: var(--color-muted-foreground);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-container" onclick="showDashboard()">
+        <span class="logo-icon">⚡</span>
+        <div>
+          <h1 class="logo-title">ML Mastery</h1>
+          <p class="logo-subtitle">10大演算法 (純HTML版)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backend URL Configuration -->
+    <div class="api-config">
+      <label>API 後端伺服器網址</label>
+      <div class="api-input-row">
+        <input type="text" id="api-url-input" class="api-input" value="http://127.0.0.1:8000">
+        <button class="api-btn" onclick="saveApiUrl()">套用</button>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">主要面板</div>
+      <div id="nav-home" class="nav-link active" onclick="showDashboard()">
+        <span>📊 首頁儀表板</span>
+      </div>
+
+      <div class="nav-section-title">十大學習主題</div>
+      <div id="sidebar-algorithms-list">
+        <!-- Will be dynamically populated -->
+      </div>
+    </nav>
+
+    <div class="sidebar-footer" style="padding: 10px; text-align: center;">
+      <div class="theme-badge" style="background: rgba(34, 197, 94, 0.1); color: var(--color-accent); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: var(--radius-sm); padding: 4px var(--space-sm); font-family: var(--font-heading); display: inline-block; font-weight: bold; font-size: 0.75rem;">
+        HTML + FASTAPI CONNECTED
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Main Content -->
+  <main class="main-content" id="main-viewport">
+    <!-- Will be dynamically updated by JavaScript router -->
+  </main>
+
+  <!-- Database & Router JavaScript Logic -->
+  <script>
+    // Config state
+    let apiBaseUrl = localStorage.getItem("ml_api_base_url") || "http://127.0.0.1:8000";
+    document.getElementById("api-url-input").value = apiBaseUrl;
+
+    function saveApiUrl() {
+      const url = document.getElementById("api-url-input").value.trim();
+      if (url) {
+        apiBaseUrl = url;
+        localStorage.setItem("ml_api_base_url", url);
+        alert("已成功套用後端 API 網址！系統將向此位址進行資料存取。");
+        loadSidebarProgress();
+        // Reload current page
+        if (currentAlgorithmId) {
+          loadAlgorithmPage(currentAlgorithmId);
+        } else {
+          showDashboard();
+        }
+      }
+    }
+
+    // Global Data Store
+    let algorithmsSummaryList = [];
+    let currentAlgorithmId = null;
+
+    // Load Sidebar Progress
+    async function loadSidebarProgress() {
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms`);
+        if (res.ok) {
+          algorithmsSummaryList = await res.json();
+          renderSidebar();
+          updateDashboardStats();
+        }
+      } catch (err) {
+        console.error("Failed to fetch algorithms in sidebar:", err);
+        // Load offline stub if API fails, to prevent broken UI
+        algorithmsSummaryList = [
+          { id: "linear-regression", name: "線性迴歸", type: "監督式學習 - 回歸", usage: "預測連續數值", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "logistic-regression", name: "邏輯斯迴歸", type: "監督式學習 - 分類", usage: "預測二元標籤", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "decision-tree", name: "決策樹", type: "監督式學習 - 樹模型", usage: "建立可解釋規則", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "random-forest", name: "隨機森林", type: "監督式學習 - 集成模型", usage: "提升泛化能力", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "support-vector-machine", name: "支援向量機", type: "監督式學習 - 分類", usage: "最大間隔分類器", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "k-nearest-neighbors", name: "K 近鄰演算法", type: "監督式學習 - 鄰近點", usage: "相似案例推論", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "naive-bayes", name: "樸素貝葉斯", type: "監督式學習 - 文字分類", usage: "文字與垃圾郵件分類", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "k-means-clustering", name: "K-Means 分群", type: "非監督式學習 - 分群", usage: "資料相似分群", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "principal-component-analysis", name: "主成分分析", type: "非監督式學習 - 降維", usage: "壓縮特徵與視覺化", study_completed: false, quiz_completed: false, playground_completed: false },
+          { id: "deep-learning", name: "深度學習", type: "神經網路/前沿", usage: "學習非線性模式", study_completed: false, quiz_completed: false, playground_completed: false }
+        ];
+        renderSidebar();
+      }
+    }
+
+    function renderSidebar() {
+      const container = document.getElementById("sidebar-algorithms-list");
+      container.innerHTML = "";
+      
+      algorithmsSummaryList.forEach(alg => {
+        const item = document.createElement("div");
+        const isActive = currentAlgorithmId === alg.id;
+        item.className = `nav-link alg-link ${isActive ? "active" : ""}`;
+        item.onclick = () => loadAlgorithmPage(alg.id);
+        
+        item.innerHTML = `
+          <div class="alg-info">
+            <span class="alg-name">${alg.name.split(" ")[0]}</span>
+            <span class="alg-type">${alg.type.split(" ")[2] || alg.type.split(" ")[0]}</span>
+          </div>
+          <div class="progress-badges">
+            <span class="badge ${alg.study_completed ? "completed" : ""}" title="已研讀導引">📖</span>
+            <span class="badge ${alg.playground_completed ? "completed" : ""}" title="已完成互動演練">🧪</span>
+            <span class="badge ${alg.quiz_completed ? "completed" : ""}" title="已通過測驗">📝</span>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Update Dashboard Stats Card
+    function updateDashboardStats() {
+      let study = 0; let playground = 0; let quiz = 0;
+      algorithmsSummaryList.forEach(a => {
+        if (a.study_completed) study++;
+        if (a.playground_completed) playground++;
+        if (a.quiz_completed) quiz++;
+      });
+      const total = algorithmsSummaryList.length || 10;
+      
+      const v1 = document.getElementById("stat-study-val");
+      const p1 = document.getElementById("stat-study-progress");
+      if (v1 && p1) {
+        v1.innerText = `${study} / ${total}`;
+        p1.style.width = `${(study / total) * 100}%`;
+      }
+
+      const v2 = document.getElementById("stat-play-val");
+      const p2 = document.getElementById("stat-play-progress");
+      if (v2 && p2) {
+        v2.innerText = `${playground} / ${total}`;
+        p2.style.width = `${(playground / total) * 100}%`;
+      }
+
+      const v3 = document.getElementById("stat-quiz-val");
+      const p3 = document.getElementById("stat-quiz-progress");
+      if (v3 && p3) {
+        v3.innerText = `${quiz} / ${total}`;
+        p3.style.width = `${(quiz / total) * 100}%`;
+      }
+    }
+
+    // Router functions
+    function showDashboard() {
+      currentAlgorithmId = null;
+      document.getElementById("nav-home").className = "nav-link active";
+      renderSidebar();
+      
+      const viewport = document.getElementById("main-viewport");
+      viewport.innerHTML = `
+        <header class="page-header">
+          <h1 class="main-title">機器學習演算法動態學習中心</h1>
+          <p class="subtitle">此為「靜態 HTML」外掛連接版。請設定左側後端網址並進入主題學習。</p>
+        </header>
+
+        <section class="stats-section">
+          <div class="glass-panel stat-card">
+            <span class="stat-icon">📖</span>
+            <div class="stat-info">
+              <span class="stat-label">導引閱讀進度</span>
+              <span class="stat-value" id="stat-study-val">0 / 10</span>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress" id="stat-study-progress"></div>
+            </div>
+          </div>
+          <div class="glass-panel stat-card">
+            <span class="stat-icon">🧪</span>
+            <div class="stat-info">
+              <span class="stat-label">互動遊樂場完成</span>
+              <span class="stat-value" id="stat-play-val">0 / 10</span>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress" id="stat-play-progress"></div>
+            </div>
+          </div>
+          <div class="glass-panel stat-card">
+            <span class="stat-icon">📝</span>
+            <div class="stat-info">
+              <span class="stat-label">觀念挑戰通過</span>
+              <span class="stat-value" id="stat-quiz-val">0 / 10</span>
+            </div>
+            <div class="stat-progress-bar">
+              <div class="stat-progress" id="stat-quiz-progress"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Decision Wizard -->
+        <section class="dashboard-section">
+          <h2 class="section-title">🔮 演算法決策精靈 (Algorithm Selection Wizard)</h2>
+          <div class="glass-panel wizard-container" id="wizard-viewport">
+            <!-- Wizard steps will be loaded here -->
+          </div>
+        </section>
+
+        <!-- SVG Roadmap -->
+        <section class="dashboard-section">
+          <h2 class="section-title">🗺️ 演算法學習地圖 (Learning Route Map)</h2>
+          <p class="section-subtitle">點擊流程圖中節點即可直接進入主題！</p>
+          <div class="glass-panel roadmap-container">
+            <svg width="100%" height="450" viewBox="0 0 1000 450" class="roadmap-svg" id="roadmap-svg-viewport">
+              <!-- Dynamically rendered SVG elements -->
+            </svg>
+          </div>
+        </section>
+      `;
+      
+      loadWizardStep(1);
+      renderSvgRoadmap();
+      updateDashboardStats();
+    }
+
+    // Wizard wizard logic
+    let wizardAnswers = {};
+    function loadWizardStep(step) {
+      const container = document.getElementById("wizard-viewport");
+      if (!container) return;
+
+      if (step === 1) {
+        wizardAnswers = {};
+        container.innerHTML = `
+          <div class="wizard-step fade-in">
+            <h3 class="wizard-question">第一步：您的資料是否有標籤 (Labels / Ground Truth)？</h3>
+            <p class="wizard-desc">意即您是否已經包含您想預測的答案標籤？</p>
+            <div class="wizard-options">
+              <button class="wizard-btn" onclick="wizardAnswers.labeled=true; loadWizardStep(2)">
+                <span class="option-title">有標籤 (Labeled Data)</span>
+                <span class="option-subtitle">進行監督式學習 (分類/回歸)</span>
+              </button>
+              <button class="wizard-btn" onclick="wizardAnswers.labeled=false; loadWizardStep(5)">
+                <span class="option-title">無標籤 (Unlabeled Data)</span>
+                <span class="option-subtitle">進行非監督式學習 (分群/降維)</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (step === 2) {
+        container.innerHTML = `
+          <div class="wizard-step fade-in">
+            <h3 class="wizard-question">第二步：您想要預測的目標數值是什麼型態？</h3>
+            <div class="wizard-options">
+              <button class="wizard-btn" onclick="wizardAnswers.target='continuous'; loadWizardRecommendation('linear-regression', '線性迴歸 (Linear Regression)')">
+                <span class="option-title">連續數值 (Continuous Value)</span>
+                <span class="option-subtitle">預測房價、營收、溫度等（回歸任務）</span>
+              </button>
+              <button class="wizard-btn" onclick="wizardAnswers.target='categorical'; loadWizardStep(3)">
+                <span class="option-title">類別標籤 (Categorical Label)</span>
+                <span class="option-subtitle">預測流失/不流失、垃圾/正常郵件（分類任務）</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (step === 3) {
+        container.innerHTML = `
+          <div class="wizard-step fade-in">
+            <h3 class="wizard-question">第三步：您是否需要能輕易向非技術人員解釋的規則？</h3>
+            <div class="wizard-options">
+              <button class="wizard-btn" onclick="wizardAnswers.explain=true; loadWizardRecommendation('decision-tree', '決策樹 (Decision Tree)')">
+                <span class="option-title">高度需要 (Explainable Rules)</span>
+                <span class="option-subtitle">希望規則像流程圖一樣直觀且可讀</span>
+              </button>
+              <button class="wizard-btn" onclick="wizardAnswers.explain=false; loadWizardStep(4)">
+                <span class="option-title">不需要 (Performance Priority)</span>
+                <span class="option-subtitle">以準確率與穩定度優先，黑盒子模型也可以接受</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (step === 4) {
+        container.innerHTML = `
+          <div class="wizard-step fade-in">
+            <h3 class="wizard-question">第四步：您的特徵主要是高維度且稀疏的文字資料嗎？</h3>
+            <div class="wizard-options">
+              <button class="wizard-btn" onclick="loadWizardRecommendation('naive-bayes', '樸素貝葉斯 (Naive Bayes)')">
+                <span class="option-title">是的 (Sparse Text Data)</span>
+                <span class="option-subtitle">例如電子郵件詞頻、社群文章分類任務</span>
+              </button>
+              <button class="wizard-btn" onclick="loadWizardRecommendation('random-forest', '隨機森林 / SVM / KNN')">
+                <span class="option-title">不是 (Tabular/Dense Data)</span>
+                <span class="option-subtitle">一般結構化表格、數值特徵等</span>
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (step === 5) {
+        container.innerHTML = `
+          <div class="wizard-step fade-in">
+            <h3 class="wizard-question">您的非監督式任務，主要目的是什麼？</h3>
+            <div class="wizard-options">
+              <button class="wizard-btn" onclick="loadWizardRecommendation('k-means-clustering', 'K-Means 分群 (K-Means Clustering)')">
+                <span class="option-title">資料分群 (Clustering)</span>
+                <span class="option-subtitle">將客戶或樣本點依相似度分為幾群</span>
+              </button>
+              <button class="wizard-btn" onclick="loadWizardRecommendation('principal-component-analysis', '主成分分析 (PCA)')">
+                <span class="option-title">特徵降維/壓縮 (Dimensionality Reduction)</span>
+                <span class="option-subtitle">減少特徵欄位、去噪或進行 2D 視覺化</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function loadWizardRecommendation(id, name) {
+      const container = document.getElementById("wizard-viewport");
+      let btnHTML = "";
+      if (id !== "random-forest") {
+        btnHTML = `<button class="go-btn" onclick="loadAlgorithmPage('${id}')">開始學習 🚀</button>`;
+      } else {
+        btnHTML = `
+          <div style="display:flex; gap:10px;">
+            <button class="go-btn" style="padding: 8px 14px;" onclick="loadAlgorithmPage('random-forest')">隨機森林 🌲</button>
+            <button class="go-btn" style="padding: 8px 14px;" onclick="loadAlgorithmPage('support-vector-machine')">SVM 📈</button>
+            <button class="go-btn" style="padding: 8px 14px;" onclick="loadAlgorithmPage('k-nearest-neighbors')">KNN 📍</button>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="wizard-step recommendation-step fade-in">
+          <div class="recommendation-badge">推薦結果</div>
+          <h3 class="recommendation-title">${name}</h3>
+          <p class="recommendation-text">根據您的選擇，我們推薦您首選該演算法進行建模。您可以直接進入該演算法的專頁開始學習！</p>
+          <div class="wizard-footer-buttons">
+            <button class="reset-btn" onclick="loadWizardStep(1)">重新測試 🔄</button>
+            ${btnHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    // Render interactive SVG roadmap
+    function renderSvgRoadmap() {
+      const svg = document.getElementById("roadmap-svg-viewport");
+      if (!svg) return;
+      
+      const studyStatus = {};
+      algorithmsSummaryList.forEach(a => {
+        studyStatus[a.id] = a.study_completed;
+      });
+
+      svg.innerHTML = `
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155" />
+          </marker>
+          <marker id="arrow-completed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
+          </marker>
+        </defs>
+
+        <!-- Connections/Lines -->
+        <line x1="180" y1="120" x2="300" y2="120" stroke="${studyStatus['linear-regression'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['linear-regression'] ? "url(#arrow-completed)" : "url(#arrow)"}" />
+        <path d="M 460 120 L 520 70" stroke="${studyStatus['logistic-regression'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['logistic-regression'] ? "url(#arrow-completed)" : "url(#arrow)"}" fill="none" />
+        <line x1="680" y1="70" x2="780" y2="70" stroke="${studyStatus['decision-tree'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['decision-tree'] ? "url(#arrow-completed)" : "url(#arrow)"}" />
+        <path d="M 460 120 L 520 170" stroke="${studyStatus['logistic-regression'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['logistic-regression'] ? "url(#arrow-completed)" : "url(#arrow)"}" fill="none" />
+        <line x1="680" y1="170" x2="780" y2="170" stroke="${studyStatus['support-vector-machine'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['support-vector-machine'] ? "url(#arrow-completed)" : "url(#arrow)"}" />
+        <path d="M 460 120 L 520 270" stroke="${studyStatus['logistic-regression'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['logistic-regression'] ? "url(#arrow-completed)" : "url(#arrow)"}" fill="none" />
+        <line x1="180" y1="360" x2="300" y2="360" stroke="${studyStatus['k-means-clustering'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['k-means-clustering'] ? "url(#arrow-completed)" : "url(#arrow)"}" />
+        <path d="M 460 360 L 630 360" stroke="${studyStatus['principal-component-analysis'] ? "#22c55e" : "#334155"}" stroke-width="3" marker-end="${studyStatus['principal-component-analysis'] ? "url(#arrow-completed)" : "url(#arrow)"}" fill="none" />
+        <path d="M 900 120 L 900 320 C 900 360, 850 360, 810 360" stroke="#334155" stroke-width="3" marker-end="url(#arrow)" fill="none" />
+
+        <!-- Nodes -->
+        <g class="svg-node" onclick="loadAlgorithmPage('linear-regression')">
+          <rect x="20" y="80" width="160" height="80" rx="10" class="node-rect ${studyStatus['linear-regression'] ? "completed" : ""}" />
+          <text x="100" y="120" text-anchor="middle" class="node-text">線性迴歸</text>
+          <text x="100" y="140" text-anchor="middle" class="node-sub">1. 監督式 - 回歸</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('logistic-regression')">
+          <rect x="300" y="80" width="160" height="80" rx="10" class="node-rect ${studyStatus['logistic-regression'] ? "completed" : ""}" />
+          <text x="380" y="120" text-anchor="middle" class="node-text">邏輯斯迴歸</text>
+          <text x="380" y="140" text-anchor="middle" class="node-sub">2. 監督式 - 分類</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('decision-tree')">
+          <rect x="520" y="30" width="160" height="80" rx="10" class="node-rect ${studyStatus['decision-tree'] ? "completed" : ""}" />
+          <text x="600" y="70" text-anchor="middle" class="node-text">決策樹</text>
+          <text x="600" y="90" text-anchor="middle" class="node-sub">3. 監督式 - 樹模型</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('random-forest')">
+          <rect x="780" y="30" width="160" height="80" rx="10" class="node-rect ${studyStatus['random-forest'] ? "completed" : ""}" />
+          <text x="860" y="70" text-anchor="middle" class="node-text">隨機森林</text>
+          <text x="860" y="90" text-anchor="middle" class="node-sub">4. 監督式 - 集成</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('support-vector-machine')">
+          <rect x="520" y="130" width="160" height="80" rx="10" class="node-rect ${studyStatus['support-vector-machine'] ? "completed" : ""}" />
+          <text x="600" y="170" text-anchor="middle" class="node-text">支援向量機</text>
+          <text x="600" y="190" text-anchor="middle" class="node-sub">5. 監督式 - 分類</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('k-nearest-neighbors')">
+          <rect x="780" y="130" width="160" height="80" rx="10" class="node-rect ${studyStatus['k-nearest-neighbors'] ? "completed" : ""}" />
+          <text x="860" y="170" text-anchor="middle" class="node-text">K 近鄰演算法</text>
+          <text x="860" y="190" text-anchor="middle" class="node-sub">6. 監督式 - 鄰近點</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('naive-bayes')">
+          <rect x="520" y="230" width="160" height="80" rx="10" class="node-rect ${studyStatus['naive-bayes'] ? "completed" : ""}" />
+          <text x="600" y="270" text-anchor="middle" class="node-text">樸素貝葉斯</text>
+          <text x="600" y="290" text-anchor="middle" class="node-sub">7. 監督式 - 文字</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('k-means-clustering')">
+          <rect x="20" y="320" width="160" height="80" rx="10" class="node-rect ${studyStatus['k-means-clustering'] ? "completed" : ""}" />
+          <text x="100" y="360" text-anchor="middle" class="node-text">K-Means 分群</text>
+          <text x="100" y="380" text-anchor="middle" class="node-sub">8. 非監督式 - 分群</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('principal-component-analysis')">
+          <rect x="300" y="320" width="160" height="80" rx="10" class="node-rect ${studyStatus['principal-component-analysis'] ? "completed" : ""}" />
+          <text x="380" y="360" text-anchor="middle" class="node-text">主成分分析</text>
+          <text x="380" y="380" text-anchor="middle" class="node-sub">9. 非監督式 - 降維</text>
+        </g>
+        <g class="svg-node" onclick="loadAlgorithmPage('deep-learning')">
+          <rect x="630" y="320" width="160" height="80" rx="10" class="node-rect ${studyStatus['deep-learning'] ? "completed" : ""}" />
+          <text x="710" y="360" text-anchor="middle" class="node-text">深度學習</text>
+          <text x="710" y="380" text-anchor="middle" class="node-sub">10. 神經網路/前沿</text>
+        </g>
+      `;
+    }
+
+    // Detail page loader
+    let detailData = null;
+    let quizQuestions = [];
+    let currentTab = "study";
+    let answersSelected = {};
+
+    async function loadAlgorithmPage(id) {
+      currentAlgorithmId = id;
+      document.getElementById("nav-home").className = "nav-link";
+      renderSidebar();
+      
+      const viewport = document.getElementById("main-viewport");
+      viewport.innerHTML = `<div style="padding: 40px; text-align: center;">載入演算法細節中...</div>`;
+
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms/${id}`);
+        if (!res.ok) throw new Error("API failed");
+        detailData = await res.json();
+        
+        // Fetch quizzes
+        const quizRes = await fetch(`${apiBaseUrl}/api/algorithms/${id}/quiz`);
+        if (quizRes.ok) {
+          quizQuestions = await quizRes.json();
+        }
+        
+        currentTab = "study";
+        answersSelected = {};
+        renderAlgorithmPageContent();
+      } catch (err) {
+        console.error("API error loading detail page:", err);
+        viewport.innerHTML = `
+          <div style="padding:40px; text-align:center; color: var(--color-destructive);">
+            <h3>連線失敗 ❌</h3>
+            <p style="margin-top: 10px;">請確認左側的後端 API 伺服器網址是否正確，且 FastAPI 正在運行中！</p>
+            <button class="go-btn" style="margin-top: 20px;" onclick="loadAlgorithmPage('${id}')">重新整理 🔄</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderAlgorithmPageContent() {
+      const viewport = document.getElementById("main-viewport");
+      if (!detailData) return;
+
+      viewport.innerHTML = `
+        <header class="page-header">
+          <span class="back-link" onclick="showDashboard()">← 返回儀表板</span>
+          <div class="header-main">
+            <h1 class="alg-title">${detailData.name}</h1>
+            <span class="alg-type-tag">${detailData.type}</span>
+          </div>
+          <p class="header-desc">🎯 <b>主要用途：</b>${detailData.usage} | 💡 <b>核心想法：</b>${detailData.idea}</p>
+        </header>
+
+        <!-- Tab Selection -->
+        <div class="tabs-row">
+          <button id="tab-btn-study" class="tab-btn ${currentTab === "study" ? "active" : ""}" onclick="switchTab('study')">📖 課程研讀指引</button>
+          <button id="tab-btn-playground" class="tab-btn ${currentTab === "playground" ? "active" : ""}" onclick="switchTab('playground')">🧪 互動演練遊樂場</button>
+          <button id="tab-btn-quiz" class="tab-btn ${currentTab === "quiz" ? "active" : ""}" onclick="switchTab('quiz')">📝 觀念挑戰測驗</button>
+        </div>
+
+        <div id="tab-viewport-area" class="tab-viewport">
+          <!-- Dynamically populated tab content -->
+        </div>
+
+        <!-- Notes section -->
+        <section class="notes-section glass-panel">
+          <div class="notes-header">
+            <h3>📝 我的個人研讀筆記 (SQLite 保存)</h3>
+            <span class="notes-status-text" id="notes-save-status"></span>
+          </div>
+          <textarea class="notes-textarea" id="notes-textarea-input" placeholder="記錄您的學習重點...">${detailData.notes || ""}</textarea>
+          <button class="save-notes-btn" onclick="saveNotesContent()">儲存筆記 💾</button>
+        </section>
+      `;
+
+      renderTabContent();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById("tab-btn-study").className = `tab-btn ${tab === "study" ? "active" : ""}`;
+      document.getElementById("tab-btn-playground").className = `tab-btn ${tab === "playground" ? "active" : ""}`;
+      document.getElementById("tab-btn-quiz").className = `tab-btn ${tab === "quiz" ? "active" : ""}`;
+      renderTabContent();
+    }
+
+    function renderTabContent() {
+      const area = document.getElementById("tab-viewport-area");
+      if (!area || !detailData) return;
+
+      if (currentTab === "study") {
+        let workflowHTML = "";
+        detailData.workflow.forEach((step, idx) => {
+          workflowHTML += `
+            <li>
+              <span class="workflow-step-num">${idx + 1}</span>
+              <p class="workflow-step-text">${step}</p>
+            </li>
+          `;
+        });
+
+        let prosHTML = "";
+        detailData.pros_cons.pros.forEach(p => prosHTML += `<li>${p}</li>`);
+        let consHTML = "";
+        detailData.pros_cons.cons.forEach(c => consHTML += `<li>${c}</li>`);
+
+        area.innerHTML = `
+          <div class="tab-pane study-pane fade-in">
+            <div class="study-section">
+              <h3>一、核心概念</h3>
+              <p class="study-text">${detailData.concept}</p>
+            </div>
+            <div class="study-section">
+              <h3>二、運作流程</h3>
+              <ol class="workflow-list">${workflowHTML}</ol>
+            </div>
+            <div class="study-section">
+              <h3>三、實務例子</h3>
+              <div class="example-box glass-panel"><p>${detailData.examples}</p></div>
+            </div>
+            <div class="study-section">
+              <h3>四、優點、限制與常見錯誤</h3>
+              <div class="pros-cons-grid">
+                <div class="pros-card glass-panel">
+                  <h4 class="card-title pros-title">優點 (Advantages)</h4>
+                  <ul>${prosHTML}</ul>
+                </div>
+                <div class="cons-card glass-panel">
+                  <h4 class="card-title cons-title">限制與缺點 (Limitations)</h4>
+                  <ul>${consHTML}</ul>
+                </div>
+              </div>
+              <div class="mistake-box glass-panel">
+                <h4 class="card-title mistakes-title">⚠️ 常見實務錯誤與陷阱</h4>
+                <p>${detailData.pros_cons.mistakes}</p>
+              </div>
+            </div>
+            <div class="study-section">
+              <h3>五、學習與實作建議</h3>
+              <div class="advice-box glass-panel"><p>${detailData.study_advice}</p></div>
+            </div>
+            <div class="study-footer-actions">
+              <button id="study-complete-btn" class="completed-btn ${detailData.progress.study_completed ? "completed" : ""}" onclick="markStudyCompleted()">
+                ${detailData.progress.study_completed ? "✓ 研讀完成！" : "標記研讀完成 📖"}
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (currentTab === "playground") {
+        renderPlaygroundWidget(area);
+      } else if (currentTab === "quiz") {
+        renderQuizWidget(area);
+      }
+    }
+
+    // Save Notes API
+    async function saveNotesContent() {
+      const txt = document.getElementById("notes-textarea-input").value;
+      const status = document.getElementById("notes-save-status");
+      status.innerText = "儲存中...";
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms/${currentAlgorithmId}/notes`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: txt })
+        });
+        if (res.ok) {
+          status.innerText = "已儲存 ⚡";
+          detailData.notes = txt;
+          setTimeout(() => status.innerText = "", 3000);
+        } else {
+          status.innerText = "儲存失敗 ❌";
+        }
+      } catch (err) {
+        status.innerText = "儲存失敗 ❌";
+      }
+    }
+
+    // Mark progress API
+    async function markStudyCompleted() {
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms/${currentAlgorithmId}/progress`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ study_completed: true })
+        });
+        if (res.ok) {
+          const r = await res.json();
+          detailData.progress = r.progress;
+          const btn = document.getElementById("study-complete-btn");
+          if (btn) {
+            btn.className = "completed-btn completed";
+            btn.innerText = "✓ 研讀完成！";
+          }
+          loadSidebarProgress();
+        }
+      } catch (err) {
+        console.error("Failed to mark study completed:", err);
+      }
+    }
+
+    async function markPlaygroundCompleted() {
+      if (detailData.progress.playground_completed) return;
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms/${currentAlgorithmId}/progress`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ playground_completed: true })
+        });
+        if (res.ok) {
+          const r = await res.json();
+          detailData.progress = r.progress;
+          loadSidebarProgress();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Quiz module renderer
+    let gradedResults = null;
+    function renderQuizWidget(area) {
+      if (quizQuestions.length === 0) {
+        area.innerHTML = `<p style="padding:20px;">本章測驗目前無法載入，請確認後端 API。</p>`;
+        return;
+      }
+      
+      let quizHTML = "";
+      quizQuestions.forEach((q, idx) => {
+        let optionsHTML = "";
+        const correctRes = gradedResults?.results.find(r => r.id === q.id);
+
+        q.options.forEach((opt, optIdx) => {
+          const isSelected = answersSelected[q.id] === optIdx;
+          const isCorrectOpt = correctRes && correctRes.correct_answer === optIdx;
+          const isWrongUserOpt = correctRes && isSelected && !correctRes.is_correct;
+
+          optionsHTML += `
+            <label class="quiz-option-label ${isSelected ? "selected" : ""} ${isCorrectOpt ? "correct-opt" : ""} ${isWrongUserOpt ? "wrong-opt" : ""}">
+              <input type="radio" name="quiz-${q.id}" ${isSelected ? "checked" : ""} ${gradedResults ? "disabled" : ""} onclick="selectQuizAnswer(${q.id}, ${optIdx})">
+              ${opt}
+            </label>
+          `;
+        });
+
+        let explanationHTML = "";
+        if (correctRes) {
+          explanationHTML = `
+            <div class="quiz-explanation-box ${correctRes.is_correct ? "correct" : "wrong"}">
+              <div class="explanation-status" style="color: ${correctRes.is_correct ? "#22c55e" : "#ef4444"}">
+                ${correctRes.is_correct ? "✓ 回答正確" : `✗ 回答錯誤 (正確答案：${q.options[correctRes.correct_answer]})`}
+              </div>
+              <p class="explanation-text">${correctRes.explanation}</p>
+            </div>
+          `;
+        }
+
+        quizHTML += `
+          <div class="quiz-card glass-panel" style="margin-bottom:20px;">
+            <h4 class="quiz-question">${idx + 1}. ${q.question}</h4>
+            <div class="quiz-options-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+              ${optionsHTML}
+            </div>
+            ${explanationHTML}
+          </div>
+        `;
+      });
+
+      let footerHTML = "";
+      if (!gradedResults) {
+        footerHTML = `<button class="submit-quiz-btn" onclick="submitQuizAnswers()">送出測驗答案 🚀</button>`;
+      } else {
+        footerHTML = `
+          <div class="quiz-score-banner glass-panel" style="margin-top:20px; padding:20px; text-align:center;">
+            <h4>測驗分數：<span class="score-val">${gradedResults.score}分</span></h4>
+            <p class="${gradedResults.passed ? "passed-text" : "failed-text"}" style="font-weight:bold; margin-top:8px;">
+              ${gradedResults.passed ? "🎉 恭喜通過！已解鎖本演算法的測驗進度。" : "😢 答對題數未達標準，再試一次吧！"}
+            </p>
+            <button class="retry-quiz-btn" onclick="retryQuiz()">重新挑戰 🔄</button>
+          </div>
+        `;
+      }
+
+      area.innerHTML = `
+        <div class="tab-pane quiz-pane fade-in">
+          <h3 class="quiz-pane-title">📝 觀念自我挑戰測驗</h3>
+          <p class="quiz-pane-desc" style="color:var(--color-muted-foreground); font-size:0.85rem; margin-bottom:20px;">
+            本測驗共 3 題，回答正確率達 60% (答對 2 題以上) 即算通過挑戰！
+          </p>
+          <div class="quiz-list">${quizHTML}</div>
+          ${footerHTML}
+        </div>
+      `;
+    }
+
+    function selectQuizAnswer(qId, optIdx) {
+      answersSelected[qId] = optIdx;
+      // Re-render to show selected style
+      renderTabContent();
+    }
+
+    async function submitQuizAnswers() {
+      if (Object.keys(answersSelected).length < quizQuestions.length) {
+        alert("請回答所有測驗題目後再送出！");
+        return;
+      }
+      try {
+        const res = await fetch(`${apiBaseUrl}/api/algorithms/${currentAlgorithmId}/quiz/grade`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers: answersSelected })
+        });
+        if (res.ok) {
+          gradedResults = await res.json();
+          if (gradedResults.passed) {
+            detailData.progress.quiz_completed = true;
+            loadSidebarProgress();
+          }
+          renderTabContent();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function retryQuiz() {
+      gradedResults = null;
+      answersSelected = {};
+      renderTabContent();
+    }
+
+    // Playgrounds Widgets Render
+    let pgState = {};
+
+    function renderPlaygroundWidget(area) {
+      const type = detailData.interactive_type;
+      
+      let pgContentHTML = "";
+      if (type === "regression_playground") {
+        // Init regression states if not set
+        if (pgState.slope === undefined) {
+          pgState.slope = 1.5;
+          pgState.intercept = 2.0;
+        }
+
+        const pts = detailData.interactive_params.points;
+        let pointsSVG = "";
+        let rssSum = 0;
+        pts.forEach(p => {
+          const cx = 20 + p.x * 30;
+          const cy = 180 - p.y * 12;
+          pointsSVG += `<circle cx="${cx}" cy="${cy}" r="5" fill="#3b82f6" />`;
+          
+          const predY = pgState.slope * p.x + pgState.intercept;
+          rssSum += Math.pow(p.y - predY, 2);
+        });
+        rssSum = parseFloat(rssSum.toFixed(3));
+
+        // Line coordinates
+        const x1 = 20;
+        const y1 = 180 - (pgState.intercept * 12);
+        const x2 = 20 + 9 * 30;
+        const y2 = 180 - ((pgState.slope * 9 + pgState.intercept) * 12);
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="slider-group">
+                <label>斜率 (Slope w₁): <span class="stat-code-val" id="pg-slope-lbl">${pgState.slope.toFixed(2)}</span></label>
+                <input type="range" min="-1" max="4" step="0.05" value="${pgState.slope}" oninput="updateRegression(this.value, 'slope')">
+              </div>
+              <div class="slider-group">
+                <label>截距 (Intercept b): <span class="stat-code-val" id="pg-intercept-lbl">${pgState.intercept.toFixed(2)}</span></label>
+                <input type="range" min="-2" max="6" step="0.1" value="${pgState.intercept}" oninput="updateRegression(this.value, 'intercept')">
+              </div>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>當前殘差平方和 (RSS):</span>
+                  <span class="stat-code-val" id="pg-rss-lbl">${rssSum}</span>
+                </div>
+                <div class="stat-row">
+                  <span>最佳極小 RSS 參考:</span>
+                  <span class="stat-success-val">~ 1.15</span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px;">
+                <line x1="0" y1="180" x2="300" y2="180" stroke="#334155" stroke-width="2" />
+                <line x1="20" y1="0" x2="20" y2="200" stroke="#334155" stroke-width="2" />
+                ${pointsSVG}
+                <line id="pg-reg-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#22c55e" stroke-width="3" />
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "logistic_playground") {
+        if (pgState.threshold === undefined) {
+          pgState.threshold = 0.5;
+        }
+
+        const pts = detailData.interactive_params.points;
+        let pointsSVG = "";
+        let correct = 0;
+        pts.forEach(p => {
+          const prob = 1 / (1 + Math.exp(-p.score));
+          const cx = 175 + (p.score / 8) * 300;
+          const cy = 200 - prob * 200;
+          const pred = prob >= pgState.threshold ? 1 : 0;
+          const isCorrect = pred === p.label;
+          if (isCorrect) correct++;
+
+          pointsSVG += `
+            <circle cx="${cx}" cy="${cy}" r="6" fill="${p.label === 1 ? "#3b82f6" : "#f59e0b"}" stroke="${isCorrect ? "#22c55e" : "#ef4444"}" stroke-width="2" />
+          `;
+        });
+        const acc = Math.round((correct / pts.length) * 100);
+
+        // Path Sigmoid
+        let sigPathD = "";
+        for (let i = 0; i <= 300; i++) {
+          const x = 20 + i;
+          const score = ((x - 175) / 150) * 8;
+          const prob = 1 / (1 + Math.exp(-score));
+          const y = 200 - prob * 200;
+          sigPathD += `${i === 0 ? "M" : "L"} ${x} ${y}`;
+        }
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="slider-group">
+                <label>分類門檻 (Threshold): <span class="stat-code-val" id="pg-thres-lbl">${pgState.threshold.toFixed(2)}</span></label>
+                <input type="range" min="0.05" max="0.95" step="0.05" value="${pgState.threshold}" oninput="updateLogistic(this.value)">
+              </div>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>預測正確率 (Accuracy):</span>
+                  <span class="stat-code-val" id="pg-acc-lbl">${acc}%</span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 350 200" style="background:#0b0f19; border-radius:8px;">
+                <line x1="20" y1="100" x2="330" y2="100" stroke="#334155" />
+                <line id="pg-logistic-threshold-line" x1="20" y1="${200 - pgState.threshold * 200}" x2="330" y2="${200 - pgState.threshold * 200}" stroke="#ef4444" stroke-dasharray="4" />
+                <path d="${sigPathD}" fill="none" stroke="#22c55e" stroke-width="3" />
+                <g id="pg-logistic-points-container">${pointsSVG}</g>
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "tree_playground") {
+        if (!pgState.treeAnswers) pgState.treeAnswers = {};
+        
+        let flowHTML = `
+          <div class="tree-flow-container">
+            <div class="glass-panel tree-question-card" style="padding:15px; text-align:center;">
+              <h4>節點 1：年齡是否大於 30 歲？</h4>
+              <div class="btn-group" style="margin-top:10px;">
+                <button class="mini-btn ${pgState.treeAnswers.age === 'yes' ? 'active' : ''}" onclick="updateTreeAnswers('age', 'yes')">是 (Yes)</button>
+                <button class="mini-btn ${pgState.treeAnswers.age === 'no' ? 'active' : ''}" onclick="updateTreeAnswers('age', 'no')">否 (No)</button>
+              </div>
+            </div>
+        `;
+
+        if (pgState.treeAnswers.age === "yes") {
+          flowHTML += `
+            <div class="glass-panel tree-question-card fade-in" style="padding:15px; text-align:center; margin-top:15px;">
+              <h4>節點 2：年收入是否高於 50 萬？</h4>
+              <div class="btn-group" style="margin-top:10px;">
+                <button class="mini-btn ${pgState.treeAnswers.income === 'yes' ? 'active' : ''}" onclick="updateTreeAnswers('income', 'yes')">是 (Yes)</button>
+                <button class="mini-btn ${pgState.treeAnswers.income === 'no' ? 'active' : ''}" onclick="updateTreeAnswers('income', 'no')">否 (No)</button>
+              </div>
+            </div>
+          `;
+        } else if (pgState.treeAnswers.age === "no") {
+          flowHTML += `
+            <div class="glass-panel tree-question-card fade-in" style="padding:15px; text-align:center; margin-top:15px;">
+              <h4>節點 2：是否為舊會員？</h4>
+              <div class="btn-group" style="margin-top:10px;">
+                <button class="mini-btn ${pgState.treeAnswers.member === 'yes' ? 'active' : ''}" onclick="updateTreeAnswers('member', 'yes')">是 (Yes)</button>
+                <button class="mini-btn ${pgState.treeAnswers.member === 'no' ? 'active' : ''}" onclick="updateTreeAnswers('member', 'no')">否 (No)</button>
+              </div>
+            </div>
+          `;
+        }
+
+        if (pgState.treeAnswers.result) {
+          flowHTML += `
+            <div class="tree-result-card fade-in" style="margin-top:15px;">
+              <h4>${pgState.treeAnswers.result}</h4>
+            </div>
+          `;
+        }
+        flowHTML += `</div>`;
+        pgContentHTML = flowHTML;
+      } else if (type === "forest_playground") {
+        if (!pgState.forestVotes) pgState.forestVotes = [];
+        
+        let treesHTML = "";
+        for (let i = 0; i < 5; i++) {
+          const vote = pgState.forestVotes[i];
+          treesHTML += `
+            <div class="tree-vote-card glass-panel" style="padding:10px; width:90px; text-align:center;">
+              <span class="tree-icon">🌲</span>
+              <span class="tree-label">樹 #${i+1}</span>
+              <span class="vote-badge ${vote !== undefined ? (vote === 1 ? "yes" : "no") : ""}">
+                ${vote !== undefined ? (vote === 1 ? "會買" : "不買") : "等待"}
+              </span>
+            </div>
+          `;
+        }
+
+        pgContentHTML = `
+          <div class="forest-container">
+            <button class="run-btn" onclick="simulateForest()">開始投票 🗳️</button>
+            <div class="trees-row" style="display:flex; gap:10px; margin-top:15px; justify-content:center;">
+              ${treesHTML}
+            </div>
+            ${pgState.forestResult ? `<div class="tree-result-card fade-in" style="margin-top:20px;"><h4>多數決共識：${pgState.forestResult}</h4></div>` : ""}
+          </div>
+        `;
+      } else if (type === "svm_playground") {
+        if (pgState.svmC === undefined) {
+          pgState.svmC = 1.0;
+          pgState.svmAngle = 45;
+        }
+
+        const pts = detailData.interactive_params.points;
+        let pointsSVG = "";
+        pts.forEach(p => {
+          const cx = 150 + p.x * 60;
+          const cy = 100 - p.y * 60;
+          pointsSVG += `<circle cx="${cx}" cy="${cy}" r="5" fill="${p.label === 1 ? "#3b82f6" : "#f59e0b"}" />`;
+        });
+
+        // Hyperplane
+        const rad = (pgState.svmAngle * Math.PI) / 180;
+        const slopeVal = Math.tan(rad);
+        const x1 = 30;
+        const y1 = 100 - slopeVal * (x1 - 150);
+        const x2 = 270;
+        const y2 = 100 - slopeVal * (x2 - 150);
+        const offset = (30 / pgState.svmC);
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="slider-group">
+                <label>懲罰參數 C: <span class="stat-code-val">${pgState.svmC.toFixed(1)}</span></label>
+                <input type="range" min="0.1" max="10.0" step="0.5" value="${pgState.svmC}" oninput="updateSvm(this.value, 'c')">
+              </div>
+              <div class="slider-group">
+                <label>調整超平面角度: <span class="stat-code-val">${pgState.svmAngle}°</span></label>
+                <input type="range" min="20" max="70" step="2" value="${pgState.svmAngle}" oninput="updateSvm(this.value, 'angle')">
+              </div>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>邊界間隔 (Margin) 寬度:</span>
+                  <span class="stat-code-val">${(2.5 / pgState.svmC).toFixed(2)}px</span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px;">
+                ${pointsSVG}
+                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#22c55e" stroke-width="3" />
+                <line x1="${x1}" y1="${y1 - offset}" x2="${x2}" y2="${y2 - offset}" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3" />
+                <line x1="${x1}" y1="${y1 + offset}" x2="${x2}" y2="${y2 + offset}" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3" />
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "knn_playground") {
+        if (pgState.knnK === undefined) {
+          pgState.knnK = 3;
+        }
+
+        const pts = detailData.interactive_params.points;
+        let pointsSVG = "";
+        pts.forEach(p => {
+          const cx = 50 + p.x * 50;
+          const cy = 200 - p.y * 40;
+          pointsSVG += `<circle cx="${cx}" cy="${cy}" r="6" fill="${p.label === "A" ? "#3b82f6" : "#f59e0b"}" />`;
+        });
+
+        let testPointSVG = "";
+        if (pgState.testPoint) {
+          const tx = 50 + pgState.testPoint.x * 50;
+          const ty = 200 - pgState.testPoint.y * 40;
+          testPointSVG += `<circle cx="${tx}" cy="${ty}" r="8" fill="#22c55e" stroke="#fff" stroke-width="2" />`;
+
+          // Draw connections
+          const dists = pts.map(p => {
+            const dist = Math.sqrt(Math.pow(p.x - pgState.testPoint.x, 2) + Math.pow(p.y - pgState.testPoint.y, 2));
+            return { ...p, dist };
+          });
+          dists.sort((a, b) => a.dist - b.dist);
+          const nearest = dists.slice(0, pgState.knnK);
+          nearest.forEach(n => {
+            const nx = 50 + n.x * 50;
+            const ny = 200 - n.y * 40;
+            testPointSVG += `<line x1="${tx}" y1="${ty}" x2="${nx}" y2="${ny}" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="2" />`;
+          });
+        }
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="slider-group">
+                <label>鄰近點個數 (K): <span class="stat-code-val">${pgState.knnK}</span></label>
+                <input type="range" min="1" max="5" step="2" value="${pgState.knnK}" oninput="updateKnnK(this.value)">
+              </div>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>點擊位置:</span>
+                  <span class="stat-code-val">${pgState.testPoint ? `X:${pgState.testPoint.x}, Y:${pgState.testPoint.y}` : "尚未點擊"}</span>
+                </div>
+                ${pgState.knnResult ? `<div class="stat-row"><span>預測結果類別:</span><span class="stat-success-val">類別 ${pgState.knnResult}</span></div>` : ""}
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px; cursor:crosshair;" onclick="clickKnnGraph(event)">
+                <text x="10" y="20" fill="#475569" font-size="8">點擊區域進行分類模擬</text>
+                ${pointsSVG}
+                ${testPointSVG}
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "naive_bayes_playground") {
+        if (pgState.nbText === undefined) {
+          pgState.nbText = "免費 中獎 會議";
+        }
+
+        // Calculation
+        const vocab = detailData.interactive_params.vocabulary;
+        const p_spam_prior = detailData.interactive_params.spam_prior;
+        const p_ham_prior = detailData.interactive_params.ham_prior;
+        const words = pgState.nbText.trim().split(/\s+/);
+        let p_words_spam = 1.0;
+        let p_words_ham = 1.0;
+        words.forEach(w => {
+          if (vocab[w]) {
+            p_words_spam *= vocab[w].spam;
+            p_words_ham *= vocab[w].ham;
+          } else {
+            p_words_spam *= 0.05;
+            p_words_ham *= 0.05;
+          }
+        });
+        const num = p_words_spam * p_spam_prior;
+        const den = num + (p_words_ham * p_ham_prior);
+        const prob = den === 0 ? 50 : Math.round((num / den) * 100);
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="input-group" style="display:flex; flex-direction:column; gap:5px;">
+                <label>輸入郵件單字 (空白分隔):</label>
+                <input type="text" class="text-input" value="${pgState.nbText}" oninput="updateNbText(this.value)">
+              </div>
+              <div class="result-stats" style="margin-top:10px;">
+                <div class="stat-row">
+                  <span>垃圾郵件機率:</span>
+                  <span class="stat-code-val">${prob}%</span>
+                </div>
+                <div class="stat-row">
+                  <span>判定結果:</span>
+                  <span class="${prob >= 50 ? 'stat-error-val' : 'stat-success-val'}">${prob >= 50 ? '垃圾郵件 (Spam)' : '正常郵件 (Ham)'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel text-calc-panel glass-panel" style="padding:15px;">
+              <h4>貝葉斯後驗機率公式:</h4>
+              <code class="math-code" style="display:block; margin-top:5px;">P(Spam|Words) = [P(Words|Spam)*P(Spam)]/P(Words)</code>
+            </div>
+          </div>
+        `;
+      } else if (type === "kmeans_playground") {
+        if (pgState.kmeansStep === undefined) {
+          pgState.kmeansStep = 0;
+          pgState.centroids = [
+            { x: 2.0, y: 2.0, color: "#ef4444" },
+            { x: 3.5, y: 3.5, color: "#3b82f6" },
+            { x: 1.5, y: 4.5, color: "#22c55e" }
+          ];
+        }
+
+        const pts = detailData.interactive_params.points;
+        let pointsSVG = "";
+        pts.forEach(p => {
+          let dotColor = "#94a3b8";
+          if (pgState.kmeansStep > 0) {
+            let minDist = Infinity;
+            pgState.centroids.forEach(c => {
+              const dist = Math.sqrt(Math.pow(p.x - c.x, 2) + Math.pow(p.y - c.y, 2));
+              if (dist < minDist) {
+                minDist = dist;
+                dotColor = c.color;
+              }
+            });
+          }
+          const cx = 50 + p.x * 50;
+          const cy = 200 - p.y * 30;
+          pointsSVG += `<circle cx="${cx}" cy="${cy}" r="5" fill="${dotColor}" />`;
+        });
+
+        let centroidsSVG = "";
+        pgState.centroids.forEach(c => {
+          const cx = 50 + c.x * 50;
+          const cy = 200 - c.y * 30;
+          centroidsSVG += `
+            <polygon points="${cx},${cy-8} ${cx+2},${cy-2} ${cx+8},${cy-2} ${cx+3},${cy+2} ${cx+5},${cy+8} ${cx},${cy+4} ${cx-5},${cy+8} ${cx-3},${cy+2} ${cx-8},${cy-2} ${cx-2},${cy-2}" fill="${c.color}" stroke="#fff" stroke-width="1.5" />
+          `;
+        });
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <button class="run-btn" onclick="stepKmeans()">
+                ${pgState.kmeansStep === 0 ? "指派樣本點到最近中心點 👇" : ""}
+                ${pgState.kmeansStep === 1 ? "計算均值更新中心點位置 👇" : ""}
+                ${pgState.kmeansStep === 2 ? "已收斂！點擊重置 🔄" : ""}
+              </button>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>步驟狀態:</span>
+                  <span class="stat-code-val">
+                    ${pgState.kmeansStep === 0 ? "準備初始化" : ""}
+                    ${pgState.kmeansStep === 1 ? "步驟 1: Assign" : ""}
+                    ${pgState.kmeansStep === 2 ? "步驟 2: Recalculate (收斂)" : ""}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px;">
+                ${pointsSVG}
+                ${centroidsSVG}
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "pca_playground") {
+        if (pgState.pcaAngle === undefined) {
+          pgState.pcaAngle = 30;
+        }
+
+        // Projection variance
+        const rad = (pgState.pcaAngle * Math.PI) / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+        const points = [
+          {x: -2.0, y: -1.0}, {x: -1.5, y: -0.8}, {x: -1.0, y: -0.5},
+          {x: 0.0, y: 0.0}, {x: 1.0, y: 0.5}, {x: 1.5, y: 0.8},
+          {x: 2.0, y: 1.0}, {x: -0.5, y: -0.2}, {x: 0.5, y: 0.2}
+        ];
+        let sumSq = 0;
+        let projPointsSVG = "";
+        points.forEach(p => {
+          const proj = p.x * cos + p.y * sin;
+          sumSq += Math.pow(proj, 2);
+
+          const cx = 150 + p.x * 50;
+          const cy = 100 - p.y * 50;
+          const dot = p.x * 50 * cos + (-p.y * 50) * (-sin);
+          const px = 150 + dot * cos;
+          const py = 100 - dot * sin;
+
+          projPointsSVG += `
+            <circle cx="${cx}" cy="${cy}" r="4" fill="#3b82f6" />
+            <circle cx="${px}" cy="${py}" r="3" fill="#ef4444" />
+            <line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#475569" stroke-width="0.8" stroke-dasharray="2" />
+          `;
+        });
+        const varianceVal = parseFloat((sumSq / points.length).toFixed(3));
+
+        // Line
+        const x1 = 150 - cos * 120;
+        const y1 = 100 + sin * 120;
+        const x2 = 150 + cos * 120;
+        const y2 = 100 - sin * 120;
+
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <div class="slider-group">
+                <label>投影軸旋轉角度: <span class="stat-code-val">${pgState.pcaAngle}°</span></label>
+                <input type="range" min="0" max="180" step="5" value="${pgState.pcaAngle}" oninput="updatePca(this.value)">
+              </div>
+              <div class="result-stats">
+                <div class="stat-row">
+                  <span>投影解釋變異量:</span>
+                  <span class="stat-code-val">${varianceVal}</span>
+                </div>
+                <div class="stat-row">
+                  <span>最佳 PC1 夾角參考:</span>
+                  <span class="stat-success-val">~ 25° - 30°</span>
+                </div>
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px;">
+                <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#22c55e" stroke-width="2.5" />
+                ${projPointsSVG}
+              </svg>
+            </div>
+          </div>
+        `;
+      } else if (type === "nn_playground") {
+        pgContentHTML = `
+          <div class="playground-layout">
+            <div class="control-panel">
+              <button class="run-btn" onclick="runNnFeedforward()">執行前向傳播 🏃</button>
+              <div class="result-stats" style="margin-top:15px;" id="nn-outputs-panel">
+                <!-- Computed outputs -->
+              </div>
+            </div>
+            <div class="visual-panel">
+              <svg width="100%" height="280" viewBox="0 0 300 200" style="background:#0b0f19; border-radius:8px;">
+                <circle cx="50" cy="70" r="16" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                <text x="50" y="74" text-anchor="middle" fill="#fff" font-size="10">x₁: 1.0</text>
+                <circle cx="50" cy="130" r="16" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                <text x="50" y="134" text-anchor="middle" fill="#fff" font-size="10">x₂: -0.5</text>
+                <circle cx="150" cy="70" r="16" fill="#1e293b" stroke="#22c55e" stroke-width="2" />
+                <text x="150" y="74" text-anchor="middle" fill="#fff" font-size="10" id="h1-label">h₁</text>
+                <circle cx="150" cy="130" r="16" fill="#1e293b" stroke="#22c55e" stroke-width="2" />
+                <text x="150" y="134" text-anchor="middle" fill="#fff" font-size="10" id="h2-label">h₂</text>
+                <circle cx="250" cy="100" r="16" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+                <text x="250" y="104" text-anchor="middle" fill="#fff" font-size="10" id="y-label">y</text>
+                <line x1="66" y1="70" x2="134" y2="70" stroke="#334155" stroke-width="2" />
+                <line x1="66" y1="76" x2="136" y2="122" stroke="#334155" stroke-width="2" />
+                <line x1="66" y1="124" x2="136" y2="78" stroke="#334155" stroke-width="2" />
+                <line x1="66" y1="130" x2="134" y2="130" stroke="#334155" stroke-width="2" />
+                <line x1="166" y1="76" x2="236" y2="94" stroke="#334155" stroke-width="2" />
+                <line x1="166" y1="124" x2="236" y2="106" stroke="#334155" stroke-width="2" />
+              </svg>
+            </div>
+          </div>
+        `;
+      }
+
+      area.innerHTML = `
+        <div class="tab-pane playground-pane fade-in">
+          <div class="playground-box">
+            ${pgContentHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    // Playground interactive functions
+    function updateRegression(val, target) {
+      if (target === "slope") pgState.slope = parseFloat(val);
+      if (target === "intercept") pgState.intercept = parseFloat(val);
+      
+      // Update label and formula
+      document.getElementById("pg-slope-lbl").innerText = pgState.slope.toFixed(2);
+      document.getElementById("pg-intercept-lbl").innerText = pgState.intercept.toFixed(2);
+      
+      // Re-render SVG line
+      const line = document.getElementById("pg-reg-line");
+      const y1 = 180 - (pgState.intercept * 12);
+      const y2 = 180 - ((pgState.slope * 9 + pgState.intercept) * 12);
+      line.setAttribute("y1", y1);
+      line.setAttribute("y2", y2);
+
+      // Recalculate RSS
+      let rss = 0;
+      detailData.interactive_params.points.forEach(p => {
+        const predY = pgState.slope * p.x + pgState.intercept;
+        rss += Math.pow(p.y - predY, 2);
+      });
+      document.getElementById("pg-rss-lbl").innerText = rss.toFixed(3);
+      markPlaygroundCompleted();
+    }
+
+    function updateLogistic(val) {
+      pgState.threshold = parseFloat(val);
+      document.getElementById("pg-thres-lbl").innerText = pgState.threshold.toFixed(2);
+      
+      // Move line
+      const line = document.getElementById("pg-logistic-threshold-line");
+      line.setAttribute("y1", 200 - pgState.threshold * 200);
+      line.setAttribute("y2", 200 - pgState.threshold * 200);
+
+      // Recompute points correction and accuracy
+      const pts = detailData.interactive_params.points;
+      const container = document.getElementById("pg-logistic-points-container");
+      let pointsSVG = "";
+      let correct = 0;
+      pts.forEach(p => {
+        const prob = 1 / (1 + Math.exp(-p.score));
+        const cx = 175 + (p.score / 8) * 300;
+        const cy = 200 - prob * 200;
+        const pred = prob >= pgState.threshold ? 1 : 0;
+        const isCorrect = pred === p.label;
+        if (isCorrect) correct++;
+
+        pointsSVG += `
+          <circle cx="${cx}" cy="${cy}" r="6" fill="${p.label === 1 ? "#3b82f6" : "#f59e0b"}" stroke="${isCorrect ? "#22c55e" : "#ef4444"}" stroke-width="2" />
+        `;
+      });
+      container.innerHTML = pointsSVG;
+      document.getElementById("pg-acc-lbl").innerText = `${Math.round((correct / pts.length) * 100)}%`;
+      markPlaygroundCompleted();
+    }
+
+    function updateTreeAnswers(key, val) {
+      pgState.treeAnswers[key] = val;
+      if (key === "age") {
+        delete pgState.treeAnswers.income;
+        delete pgState.treeAnswers.member;
+        pgState.treeAnswers.result = "";
+      } else if (key === "income") {
+        pgState.treeAnswers.result = val === "yes" ? "預測結果：會購買 🛍️ (100% 信心度)" : "預測結果：不購買 ❌";
+      } else if (key === "member") {
+        pgState.treeAnswers.result = val === "yes" ? "預測結果：會購買 🛍️" : "預測結果：不購買 ❌";
+      }
+      renderTabContent();
+    }
+
+    function simulateForest() {
+      pgState.forestVotes = Array.from({ length: 5 }, () => (Math.random() > 0.4 ? 1 : 0));
+      const ones = pgState.forestVotes.filter(v => v === 1).length;
+      pgState.forestResult = ones >= 3 ? "購買 (Consensus: Buy)" : "不購買 (Consensus: Don't Buy)";
+      renderTabContent();
+    }
+
+    function updateSvm(val, mode) {
+      if (mode === "c") pgState.svmC = parseFloat(val);
+      if (mode === "angle") pgState.svmAngle = parseInt(val);
+      renderTabContent();
+    }
+
+    function updateKnnK(val) {
+      pgState.knnK = parseInt(val);
+      renderTabContent();
+    }
+
+    function clickKnnGraph(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = parseFloat(((e.clientX - rect.left) / rect.width * 4).toFixed(2));
+      const y = parseFloat((4 - (e.clientY - rect.top) / rect.height * 4).toFixed(2));
+      pgState.testPoint = { x, y };
+
+      // Solve KNN
+      const pts = detailData.interactive_params.points;
+      const dists = pts.map(p => {
+        const dist = Math.sqrt(Math.pow(p.x - x, 2) + Math.pow(p.y - y, 2));
+        return { ...p, dist };
+      });
+      dists.sort((a, b) => a.dist - b.dist);
+      const nearest = dists.slice(0, pgState.knnK);
+      const counts = {};
+      nearest.forEach(n => {
+        counts[n.label] = (counts[n.label] || 0) + 1;
+      });
+      pgState.knnResult = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+      renderTabContent();
+    }
+
+    function updateNbText(val) {
+      pgState.nbText = val;
+      renderTabContent();
+    }
+
+    function stepKmeans() {
+      if (pgState.kmeansStep === 0) {
+        pgState.kmeansStep = 1;
+        renderTabContent();
+        markPlaygroundCompleted();
+      } else if (pgState.kmeansStep === 1) {
+        const pts = detailData.interactive_params.points;
+        const groups = { "#ef4444": [], "#3b82f6": [], "#22c55e": [] };
+        
+        pts.forEach(p => {
+          let minDist = Infinity;
+          let color = "#ef4444";
+          pgState.centroids.forEach(c => {
+            const dist = Math.sqrt(Math.pow(p.x - c.x, 2) + Math.pow(p.y - c.y, 2));
+            if (dist < minDist) {
+              minDist = dist;
+              color = c.color;
+            }
+          });
+          groups[color].push(p);
+        });
+
+        pgState.centroids = pgState.centroids.map(c => {
+          const grp = groups[c.color];
+          if (grp.length === 0) return c;
+          const avgX = grp.reduce((sum, p) => sum + p.x, 0) / grp.length;
+          const avgY = grp.reduce((sum, p) => sum + p.y, 0) / grp.length;
+          return { ...c, x: parseFloat(avgX.toFixed(2)), y: parseFloat(avgY.toFixed(2)) };
+        });
+
+        pgState.kmeansStep = 2;
+        renderTabContent();
+      } else {
+        pgState.kmeansStep = 0;
+        pgState.centroids = [
+          { x: 2.0, y: 2.0, color: "#ef4444" },
+          { x: 3.5, y: 3.5, color: "#3b82f6" },
+          { x: 1.5, y: 4.5, color: "#22c55e" }
+        ];
+        renderTabContent();
+      }
+    }
+
+    function updatePca(val) {
+      pgState.pcaAngle = parseInt(val);
+      renderTabContent();
+    }
+
+    function runNnFeedforward() {
+      const w = { w11: 0.8, w12: -0.2, w21: 0.4, w22: 0.9, v11: 0.5, v21: -0.6 };
+      const z1 = w.w11 * 1.0 + w.w12 * (-0.5) + 0.1;
+      const z2 = w.w21 * 1.0 + w.w22 * (-0.5) + 0.2;
+      const h1 = 1 / (1 + Math.exp(-z1));
+      const h2 = 1 / (1 + Math.exp(-z2));
+      const z3 = w.v11 * h1 + w.v21 * h2 - 0.3;
+      const y = 1 / (1 + Math.exp(-z3));
+
+      document.getElementById("h1-label").innerText = `h₁:${h1.toFixed(2)}`;
+      document.getElementById("h2-label").innerText = `h₂:${h2.toFixed(2)}`;
+      document.getElementById("y-label").innerText = `y:${y.toFixed(2)}`;
+
+      document.getElementById("nn-outputs-panel").innerHTML = `
+        <div class="stat-row"><span>隱藏層 h₁ 輸出:</span><span class="stat-code-val">${h1.toFixed(3)}</span></div>
+        <div class="stat-row"><span>隱藏層 h₂ 輸出:</span><span class="stat-code-val">${h2.toFixed(3)}</span></div>
+        <div class="stat-row"><span>最終輸出層 y 輸出:</span><span class="stat-success-val">${y.toFixed(3)}</span></div>
+      `;
+      markPlaygroundCompleted();
+    }
+
+    // Initialize application on load
+    loadSidebarProgress();
+    showDashboard();
+  </script>
+</body>
+</html>
